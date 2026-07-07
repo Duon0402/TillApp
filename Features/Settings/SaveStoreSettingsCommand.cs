@@ -15,7 +15,7 @@ namespace TillApp.Features
 
         public async Task<Unit> Handle(SaveStoreSettingsCommand cmd, CancellationToken ct)
         {
-            var settings = await _db.StoreSettings.FirstOrDefaultAsync();
+            var settings = await _db.StoreSettings.FirstOrDefaultAsync(ct);
 
             if (settings == null)
             {
