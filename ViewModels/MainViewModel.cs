@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MediatR;
 using TillApp.Features;
 using TillApp.Services;
@@ -25,5 +26,8 @@ namespace TillApp.ViewModels
             PingResult = await _mediator.Send(new PingCommand());
             Navigation.NavigateTo<LoginViewModel>();
         }
+
+        [RelayCommand]
+        private void NavigateToProducts() => Navigation.NavigateTo<ProductListViewModel>();
     }
 }

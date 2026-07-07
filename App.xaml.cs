@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
@@ -41,9 +42,15 @@ namespace TillApp
             services.AddTransient<MainViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<SettingsViewModel>();
+            services.AddTransient<ProductListViewModel>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ISessionService, SessionService>();
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<App>());
+            services.AddValidatorsFromAssemblyContaining<App>();
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblyContaining<App>();
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            });
             services.AddDbContext<AppDbContext>(opt => opt.UseSqlite("Data Source=tillapp.db"));
         }
     }
