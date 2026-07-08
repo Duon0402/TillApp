@@ -19,14 +19,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="140" Height="100" Margin="6" Padding="10"
-                                Background="White" BorderBrush="#DDDDDD" BorderThickness="1"
-                                CornerRadius="6">
+                        <Button Width="140" Height="100" Margin="6" Padding="10"
+                                Command="{Binding DataContext.AddToCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding}">
                             <StackPanel>
                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" TextWrapping="Wrap"/>
                                 <TextBlock Text="{Binding Price, StringFormat={}{0:N0} đ}" Margin="0,8,0,0"/>
                             </StackPanel>
-                        </Border>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -43,7 +43,31 @@
                     <Button Content="Thanh toán" Margin="0,12,0,0" Padding="0,8" IsEnabled="False"/>
                 </StackPanel>
 
-                <ListView/>
+                <ListView ItemsSource="{Binding CartItems}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" Content="-" Width="24" Command="{Binding DecreaseCommand}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Qty}" Width="24" TextAlignment="Center" VerticalAlignment="Center"/>
+                                <Button Grid.Column="3" Content="+" Width="24" Command="{Binding IncreaseCommand}"/>
+                                <TextBlock Grid.Column="4" Text="{Binding LineTotal, StringFormat={}{0:N0} đ}" Width="80" TextAlignment="Right" VerticalAlignment="Center"/>
+                                <Button Grid.Column="5" Content="Xóa" Margin="8,0,0,0"
+                                        Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </DockPanel>
         </Border>
     </Grid>

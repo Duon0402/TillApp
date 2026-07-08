@@ -15,15 +15,12 @@ namespace TillApp.ViewModels
         private readonly IMediator _mediator;
 
         [ObservableProperty]
-        private ObservableCollection<ProductDto> _products = new();
+        private ObservableCollection<ProductDto> _products = [];
 
         [ObservableProperty]
         private string _searchText = string.Empty;
 
-        public ProductListViewModel(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public ProductListViewModel(IMediator mediator) => _mediator = mediator;
 
         public async Task LoadAsync()
         {
