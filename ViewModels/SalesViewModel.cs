@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MediatR;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using TillApp.Features;
 using TillApp.Models;
 
@@ -18,6 +19,9 @@ namespace TillApp.ViewModels
         [ObservableProperty]
         private ObservableCollection<CartItemViewModel> _cartItems = [];
 
+        [ObservableProperty]
+        private string _barcodeInput = string.Empty;
+
         public decimal GrandTotal => CartItems.Sum(i => i.LineTotal);
 
         public SalesViewModel(IMediator mediator) => _mediator = mediator;
@@ -32,19 +36,7 @@ namespace TillApp.ViewModels
         [RelayCommand]
         private void AddToCart(ProductDto product)
         {
-            var existing = CartItems.FirstOrDefault(i => i.ProductId == product.Id);
-
-            if (existing != null)
-            {
-                existing.Qty++;
-            }
-            else
-            {
-                var item = new CartItemViewModel(product.Id, product.Name, product.Price);
-                item.PropertyChanged += CartItem_PropertyChanged;
-                CartItems.Add(item);
-            }
-
+            AddOrIncrease(product);
             OnPropertyChanged(nameof(GrandTotal));
         }
 
@@ -60,6 +52,38 @@ namespace TillApp.ViewModels
         {
             if (e.PropertyName == nameof(CartItemViewModel.LineTotal))
                 OnPropertyChanged(nameof(GrandTotal));
+        }
+
+        [RelayCommand]
+        private async Task ScanBarcode()
+        {
+            if (string.IsNullOrWhiteSpace(BarcodeInput))
+                return;
+
+            var product = await _mediator.Send(new GetProductByBarcodeQuery(BarcodeInput));
+
+            if (product is not null)
+                AddOrIncrease(product);
+            else
+                MessageBox.Show($"Không tìm thấy sản phẩm với mã '{BarcodeInput}'", "Quét mã vạch");
+
+            BarcodeInput = string.Empty;
+        }
+
+        private void AddOrIncrease(ProductDto product)
+        {
+            var existing = CartItems.FirstOrDefault(i => i.ProductId == product.Id);
+
+            if (existing != null)
+            {
+                existing.Qty++;
+            }
+            else
+            {
+                var item = new CartItemViewModel(product.Id, product.Name, product.Price);
+                item.PropertyChanged += CartItem_PropertyChanged;
+                CartItems.Add(item);
+            }
         }
     }
 }

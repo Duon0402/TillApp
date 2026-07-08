@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using TillApp.ViewModels;
 
@@ -10,7 +11,7 @@ public partial class ProductListView : UserControl
         InitializeComponent();
     }
 
-    private async void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
         if (DataContext is ProductListViewModel vm)
             await vm.LoadAsync();
