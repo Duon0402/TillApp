@@ -52,7 +52,7 @@
 					<StackPanel DockPanel.Dock="Bottom">
 						<Separator Margin="0,8"/>
 						<TextBlock Text="{Binding GrandTotal, StringFormat={}Tổng cộng: {0:N0} đ}" FontSize="16" FontWeight="Bold"/>
-						<Button Content="Thanh toán" Margin="0,12,0,0" Padding="0,8" IsEnabled="False"/>
+						<Button Content="Thanh toán" Margin="0,12,0,0" Padding="0,8" Command="{Binding CheckoutCommand}"/>
 					</StackPanel>
 
 					<ListView ItemsSource="{Binding CartItems}">

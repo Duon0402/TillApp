@@ -38,7 +38,7 @@ namespace TillApp
 
         private void RegisterServices(IServiceCollection services)
         {
-            services.AddTransient<SalesViewModel>();
+            services.AddSingleton<SalesViewModel>();
             services.AddTransient<MainWindow>();
             services.AddTransient<MainViewModel>();
             services.AddTransient<LoginViewModel>();

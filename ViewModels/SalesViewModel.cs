@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using MediatR;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -63,7 +64,10 @@ namespace TillApp.ViewModels
             var product = await _mediator.Send(new GetProductByBarcodeQuery(BarcodeInput));
 
             if (product is not null)
+            {
                 AddOrIncrease(product);
+                OnPropertyChanged(nameof(GrandTotal));
+            }
             else
                 MessageBox.Show($"Không tìm thấy sản phẩm với mã '{BarcodeInput}'", "Quét mã vạch");
 
@@ -84,6 +88,34 @@ namespace TillApp.ViewModels
                 item.PropertyChanged += CartItem_PropertyChanged;
                 CartItems.Add(item);
             }
+        }
+
+        [RelayCommand]
+        private async Task Checkout()
+        {
+            if (CartItems.Count == 0)
+                return;
+
+            var items = CartItems
+                .Select(i => new CheckoutItemDto(i.ProductId, i.Qty, i.UnitPrice, i.LineDiscount))
+                .ToList();
+
+            try
+            {
+                // TODO: bước 3.5 (PaymentDialog) sẽ thay "Cash" bằng phương thức thanh toán người dùng chọn
+                await _mediator.Send(new CheckoutCommand(items, "Cash"));
+            }
+            catch (ValidationException ex)
+            {
+                MessageBox.Show(string.Join("\n", ex.Errors.Select(e => e.ErrorMessage)), "Không thể thanh toán");
+                return;
+            }
+
+            foreach (var item in CartItems)
+                item.PropertyChanged -= CartItem_PropertyChanged;
+
+            CartItems.Clear();
+            OnPropertyChanged(nameof(GrandTotal));
         }
     }
 }
