@@ -46,6 +46,7 @@ namespace TillApp
             services.AddTransient<ProductListViewModel>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ISessionService, SessionService>();
+            services.AddSingleton<IDialogService, DialogService>();
             services.AddValidatorsFromAssemblyContaining<App>();
             services.AddMediatR(cfg =>
             {

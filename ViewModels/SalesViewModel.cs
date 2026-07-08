@@ -7,12 +7,14 @@ using System.ComponentModel;
 using System.Windows;
 using TillApp.Features;
 using TillApp.Models;
+using TillApp.Services;
 
 namespace TillApp.ViewModels
 {
     public partial class SalesViewModel : BaseViewModel
     {
         private readonly IMediator _mediator;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private ObservableCollection<ProductDto> _products = [];
@@ -25,7 +27,11 @@ namespace TillApp.ViewModels
 
         public decimal GrandTotal => CartItems.Sum(i => i.LineTotal);
 
-        public SalesViewModel(IMediator mediator) => _mediator = mediator;
+        public SalesViewModel(IMediator mediator, IDialogService dialogService)
+        {
+            _mediator = mediator;
+            _dialogService = dialogService;
+        }
 
         public async Task LoadAsync()
         {
@@ -96,14 +102,17 @@ namespace TillApp.ViewModels
             if (CartItems.Count == 0)
                 return;
 
+            var payment = _dialogService.ShowPaymentDialog(GrandTotal);
+            if (payment is null)
+                return;
+
             var items = CartItems
                 .Select(i => new CheckoutItemDto(i.ProductId, i.Qty, i.UnitPrice, i.LineDiscount))
                 .ToList();
 
             try
             {
-                // TODO: bước 3.5 (PaymentDialog) sẽ thay "Cash" bằng phương thức thanh toán người dùng chọn
-                await _mediator.Send(new CheckoutCommand(items, "Cash"));
+                await _mediator.Send(new CheckoutCommand(items, payment.PaymentMethod));
             }
             catch (ValidationException ex)
             {

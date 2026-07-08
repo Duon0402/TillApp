@@ -1,0 +1,25 @@
+<Window x:Class="TillApp.Views.PaymentDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Thanh toán" Height="340" Width="360"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="{Binding Total, StringFormat={}Tổng tiền: {0:N0} đ}"
+                   FontSize="18" FontWeight="Bold" Margin="0,0,0,18"/>
+
+        <TextBlock Text="Hình thức thanh toán" Style="{StaticResource FieldLabelStyle}"/>
+        <RadioButton Content="Tiền mặt" GroupName="PaymentMethod" IsChecked="True"
+                     Checked="CashRadio_Checked" Margin="0,4,0,6"/>
+        <RadioButton Content="Chuyển khoản" GroupName="PaymentMethod"
+                     Checked="TransferRadio_Checked" Margin="0,0,0,16"/>
+
+        <StackPanel x:Name="CashPanel">
+            <TextBlock Text="Tiền khách đưa" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Text="{Binding CashReceived, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+            <TextBlock Text="{Binding ChangeAmount, StringFormat={}Tiền thối: {0:N0} đ}" FontWeight="Bold"/>
+        </StackPanel>
+
+        <Button Content="Xác nhận" Margin="0,20,0,0" Click="Confirm_Click"/>
+    </StackPanel>
+</Window>
