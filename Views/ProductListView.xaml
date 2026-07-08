@@ -3,15 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Loaded="UserControl_Loaded">
 
-    <DockPanel Margin="16">
-        <TextBlock DockPanel.Dock="Top" Text="Sản phẩm" FontSize="24" FontWeight="Bold" Margin="0,0,0,12"/>
+    <DockPanel Margin="24">
+        <TextBlock DockPanel.Dock="Top" Text="Sản phẩm" FontSize="22" FontWeight="Bold" Margin="0,0,0,16"/>
 
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,12">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,14">
             <TextBox Width="300" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Content="Nhập từ CSV" Command="{Binding ImportCsvCommand}" Margin="12,0,0,0"/>
         </StackPanel>
 
-        <DataGrid ItemsSource="{Binding Products}" AutoGenerateColumns="False" IsReadOnly="True">
+        <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1" CornerRadius="8" Background="White">
+        <DataGrid ItemsSource="{Binding Products}" AutoGenerateColumns="False" IsReadOnly="True"
+                  BorderThickness="0" RowHeight="34" GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="{StaticResource CardBorderBrush}"
+                  AlternatingRowBackground="{StaticResource SurfaceBrush}"
+                  HeadersVisibility="Column">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+                    <Setter Property="Padding" Value="10,8"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Tên" Binding="{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="150"/>
@@ -31,5 +44,6 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        </Border>
     </DockPanel>
 </UserControl>

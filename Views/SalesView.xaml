@@ -3,85 +3,89 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Loaded="UserControl_Loaded">
 
-	<DockPanel>
-		<Border DockPanel.Dock="Top" Background="#1F2937" Padding="16,12" Margin="0,0,0,12">
-			<DockPanel>
-				<TextBlock DockPanel.Dock="Left" Text="Quét mã vạch:" Foreground="White"
-						   FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
-				<TextBox x:Name="BarcodeTextBox"
-						 Text="{Binding BarcodeInput, UpdateSourceTrigger=PropertyChanged}"
-						 KeyDown="BarcodeTextBox_KeyDown"
-						 FontSize="18" Padding="10,6" VerticalContentAlignment="Center"/>
-			</DockPanel>
-		</Border>
+    <DockPanel Background="{StaticResource SurfaceBrush}">
+        <Border DockPanel.Dock="Top" Background="{StaticResource SidebarBrush}" Padding="20,14">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left" Text="Quét mã vạch:" Foreground="White"
+                           FontSize="15" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                <TextBox x:Name="BarcodeTextBox"
+                         Text="{Binding BarcodeInput, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="BarcodeTextBox_KeyDown"
+                         FontSize="16" Padding="10,7" VerticalContentAlignment="Center"
+                         Background="White" BorderThickness="0"/>
+            </DockPanel>
+        </Border>
 
-		<Grid Margin="16">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="3*"/>
-				<ColumnDefinition Width="2*"/>
-			</Grid.ColumnDefinitions>
+        <Grid Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
 
-			<!-- Cột trái: danh sách sản phẩm -->
-			<ScrollViewer Grid.Column="0" Margin="0,0,12,0">
-				<ItemsControl ItemsSource="{Binding Products}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<WrapPanel/>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Button Width="140" Height="100" Margin="6" Padding="10"
-									Command="{Binding DataContext.AddToCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-									CommandParameter="{Binding}">
-								<StackPanel>
-									<TextBlock Text="{Binding Name}" FontWeight="Bold" TextWrapping="Wrap"/>
-									<TextBlock Text="{Binding Price, StringFormat={}{0:N0} đ}" Margin="0,8,0,0"/>
-								</StackPanel>
-							</Button>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ScrollViewer>
+            <!-- Cột trái: danh sách sản phẩm -->
+            <ScrollViewer Grid.Column="0" Margin="0,0,16,0" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Products}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Width="150" Height="104" Margin="0,0,10,10"
+                                    Style="{StaticResource ProductCardButtonStyle}"
+                                    Command="{Binding DataContext.AddToCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Price, StringFormat={}{0:N0} đ}" Margin="0,8,0,0"
+                                               Foreground="{StaticResource AccentBrush}" FontWeight="Bold"/>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
-			<!-- Cột phải: giỏ hàng -->
-			<Border Grid.Column="1" Background="#F3F4F6" CornerRadius="6" Padding="12">
-				<DockPanel>
-					<TextBlock DockPanel.Dock="Top" Text="Giỏ hàng" FontSize="18" FontWeight="Bold" Margin="0,0,0,12"/>
+            <!-- Cột phải: giỏ hàng -->
+            <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1" CornerRadius="8" Padding="16">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Giỏ hàng" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
 
-					<StackPanel DockPanel.Dock="Bottom">
-						<Separator Margin="0,8"/>
-						<TextBlock Text="{Binding GrandTotal, StringFormat={}Tổng cộng: {0:N0} đ}" FontSize="16" FontWeight="Bold"/>
-						<Button Content="Thanh toán" Margin="0,12,0,0" Padding="0,8" Command="{Binding CheckoutCommand}"/>
-					</StackPanel>
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <Separator Margin="0,10" Background="{StaticResource CardBorderBrush}"/>
+                        <TextBlock Text="{Binding GrandTotal, StringFormat={}Tổng cộng: {0:N0} đ}" FontSize="16" FontWeight="Bold"/>
+                        <Button Content="Thanh toán" Margin="0,12,0,0" Padding="0,10" Command="{Binding CheckoutCommand}"/>
+                    </StackPanel>
 
-					<ListView ItemsSource="{Binding CartItems}">
-						<ListView.ItemTemplate>
-							<DataTemplate>
-								<Grid Margin="0,4">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="*"/>
-										<ColumnDefinition Width="Auto"/>
-										<ColumnDefinition Width="Auto"/>
-										<ColumnDefinition Width="Auto"/>
-										<ColumnDefinition Width="Auto"/>
-										<ColumnDefinition Width="Auto"/>
-									</Grid.ColumnDefinitions>
+                    <ListView ItemsSource="{Binding CartItems}" BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-									<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
-									<Button Grid.Column="1" Content="-" Width="24" Command="{Binding DecreaseCommand}"/>
-									<TextBlock Grid.Column="2" Text="{Binding Qty}" Width="24" TextAlignment="Center" VerticalAlignment="Center"/>
-									<Button Grid.Column="3" Content="+" Width="24" Command="{Binding IncreaseCommand}"/>
-									<TextBlock Grid.Column="4" Text="{Binding LineTotal, StringFormat={}{0:N0} đ}" Width="80" TextAlignment="Right" VerticalAlignment="Center"/>
-									<Button Grid.Column="5" Content="Xóa" Margin="8,0,0,0"
-											Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-											CommandParameter="{Binding}"/>
-								</Grid>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-				</DockPanel>
-			</Border>
-		</Grid>
-	</DockPanel>
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                    <Button Grid.Column="1" Content="-" Style="{StaticResource QtyButtonStyle}" Command="{Binding DecreaseCommand}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding Qty}" Width="28" TextAlignment="Center" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="3" Content="+" Style="{StaticResource QtyButtonStyle}" Command="{Binding IncreaseCommand}"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding LineTotal, StringFormat={}{0:N0} đ}" Width="80" TextAlignment="Right" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                    <Button Grid.Column="5" Content="Xóa" Style="{StaticResource LinkButtonStyle}" Margin="6,0,0,0"
+                                            Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
 </UserControl>

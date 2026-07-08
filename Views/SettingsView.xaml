@@ -3,27 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Loaded="UserControl_Loaded">
 
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="360">
-        <TextBlock Text="Cấu hình cửa hàng" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="380">
+        <StackPanel>
+            <TextBlock Text="Cấu hình cửa hàng" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
 
-        <TextBlock Text="Tên cửa hàng"/>
-        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,12"/>
+            <TextBlock Text="Tên cửa hàng" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14"/>
 
-        <TextBlock Text="Địa chỉ"/>
-        <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,12"/>
+            <TextBlock Text="Địa chỉ" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14"/>
 
-        <TextBlock Text="Số điện thoại"/>
-        <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,12"/>
+            <TextBlock Text="Số điện thoại" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14"/>
 
-        <TextBlock Text="Mã số thuế"/>
-        <TextBox Text="{Binding TaxCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,12"/>
+            <TextBlock Text="Mã số thuế" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Text="{Binding TaxCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14"/>
 
-        <TextBlock Text="Đường dẫn logo (tùy chọn)"/>
-        <TextBox Text="{Binding LogoPath, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,12"/>
+            <TextBlock Text="Đường dẫn logo (tùy chọn)" Style="{StaticResource FieldLabelStyle}"/>
+            <TextBox Text="{Binding LogoPath, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,18"/>
 
-        <Button Content="Lưu" Command="{Binding SaveCommand}" Margin="0,8,0,8"/>
+            <Button Content="Lưu" Command="{Binding SaveCommand}"/>
 
-        <TextBlock Text="{Binding StatusMessage}"
-                   Foreground="Green" TextWrapping="Wrap"/>
-    </StackPanel>
+            <TextBlock Text="{Binding StatusMessage}" Margin="0,12,0,0"
+                       Foreground="#16A34A" TextWrapping="Wrap"/>
+        </StackPanel>
+    </Border>
 </UserControl>

@@ -3,23 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="TillApp" Height="700" Width="1100"
         WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid Background="{StaticResource SurfaceBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Background="#1F2937">
+        <StackPanel Grid.Column="0" Background="{StaticResource SidebarBrush}">
             <TextBlock Text="TillApp" Foreground="White" FontSize="20"
-                       Margin="16,20,16,20" FontWeight="Bold"/>
+                       Margin="16,20,16,24" FontWeight="Bold"/>
 
-            <Button Content="Bán hàng" Margin="8,4" Command="{Binding NavigateToSalesCommand}"/>
-            <Button Content="Sản phẩm" Margin="8,4" Command="{Binding NavigateToProductsCommand}"/>
-            <Button Content="Báo cáo" Margin="8,4"/>
+            <Button Content="Bán hàng" Style="{StaticResource SidebarButtonStyle}"
+                    Command="{Binding NavigateToSalesCommand}"/>
+            <Button Content="Sản phẩm" Style="{StaticResource SidebarButtonStyle}"
+                    Command="{Binding NavigateToProductsCommand}"/>
+            <Button Content="Báo cáo" Style="{StaticResource SidebarButtonStyle}"/>
         </StackPanel>
 
-
-        <ContentControl Grid.Column="1" 
+        <ContentControl Grid.Column="1"
                         Content="{Binding Navigation.CurrentViewModel}"/>
     </Grid>
 </Window>
