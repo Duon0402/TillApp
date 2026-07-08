@@ -13,7 +13,7 @@
             <TextBlock Text="TillApp" Foreground="White" FontSize="20"
                        Margin="16,20,16,20" FontWeight="Bold"/>
 
-            <Button Content="Bán hàng" Margin="8,4"/>
+            <Button Content="Bán hàng" Margin="8,4" Command="{Binding NavigateToSalesCommand}"/>
             <Button Content="Sản phẩm" Margin="8,4" Command="{Binding NavigateToProductsCommand}"/>
             <Button Content="Báo cáo" Margin="8,4"/>
         </StackPanel>

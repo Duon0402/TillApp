@@ -29,5 +29,8 @@ namespace TillApp.ViewModels
 
         [RelayCommand]
         private void NavigateToProducts() => Navigation.NavigateTo<ProductListViewModel>();
+
+        [RelayCommand]
+        private void NavigateToSales() => Navigation.NavigateTo<SalesViewModel>();
     }
 }

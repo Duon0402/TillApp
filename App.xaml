@@ -15,5 +15,8 @@
         <DataTemplate DataType="{x:Type vm:ProductListViewModel}">
             <views:ProductListView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SalesViewModel}">
+            <views:SalesView />
+        </DataTemplate>
     </Application.Resources>
 </Application>
