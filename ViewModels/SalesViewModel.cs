@@ -25,7 +25,13 @@ namespace TillApp.ViewModels
         [ObservableProperty]
         private string _barcodeInput = string.Empty;
 
-        public decimal GrandTotal => CartItems.Sum(i => i.LineTotal);
+        [ObservableProperty]
+        private string _voucherCode = string.Empty;
+
+        [ObservableProperty]
+        private decimal _voucherDiscount;
+
+        public decimal GrandTotal => CartItems.Sum(i => i.LineTotal) - VoucherDiscount;
 
         public SalesViewModel(IMediator mediator, IDialogService dialogService)
         {
@@ -112,7 +118,7 @@ namespace TillApp.ViewModels
 
             try
             {
-                await _mediator.Send(new CheckoutCommand(items, payment.PaymentMethod));
+                await _mediator.Send(new CheckoutCommand(items, payment.PaymentMethod, VoucherCode, VoucherDiscount));
             }
             catch (ValidationException ex)
             {
@@ -124,7 +130,30 @@ namespace TillApp.ViewModels
                 item.PropertyChanged -= CartItem_PropertyChanged;
 
             CartItems.Clear();
+            VoucherCode = string.Empty;
+            VoucherDiscount = 0;
             OnPropertyChanged(nameof(GrandTotal));
+        }
+
+        [RelayCommand]
+        public async Task ApplyVoucher()
+        {
+            if (string.IsNullOrWhiteSpace(VoucherCode))
+            {
+                return;
+            }
+
+            var result = await _mediator.Send(new VoucherApplyCommand(VoucherCode, GrandTotal));
+
+            if (result.Success)
+            {
+                VoucherDiscount = result.DiscountAmount;
+                OnPropertyChanged(nameof(GrandTotal));
+            }
+            else
+            {
+                MessageBox.Show(result.ErrorMessage ?? "Không thể áp dụng voucher", "Áp dụng voucher");
+            }
         }
     }
 }

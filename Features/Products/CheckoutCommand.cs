@@ -7,7 +7,12 @@ using TillApp.Models;
 namespace TillApp.Features
 {
     public record CheckoutItemDto(int ProductId, int Qty, decimal UnitPrice, decimal LineDiscount);
-    public record CheckoutCommand(List<CheckoutItemDto> Items, string PaymentMethod) : IRequest<int>;
+    public record CheckoutCommand(
+        List<CheckoutItemDto> Items,
+        string PaymentMethod,
+        string? VoucherCode = null,
+        decimal VoucherDiscount = 0
+    ) : IRequest<int>;
 
     public class CheckoutHandler : IRequestHandler<CheckoutCommand, int>
     {
@@ -17,11 +22,13 @@ namespace TillApp.Features
 
         public async Task<int> Handle(CheckoutCommand cmd, CancellationToken ct)
         {
+            var subtotal = cmd.Items.Sum(i => (i.UnitPrice * i.Qty) - i.LineDiscount);
+
             var order = new Order
             {
                 CreatedAt = DateTime.Now,
                 PaymentMethod = cmd.PaymentMethod,
-                Total = cmd.Items.Sum(i => (i.UnitPrice * i.Qty) - i.LineDiscount),
+                Total = subtotal - cmd.VoucherDiscount,
             };
 
             _db.Orders.Add(order);
@@ -47,6 +54,13 @@ namespace TillApp.Features
                     Note = "Bán hàng",
                     CreatedAt = DateTime.Now
                 });
+            }
+
+            if (!string.IsNullOrWhiteSpace(cmd.VoucherCode))
+            {
+                var voucher = await _db.Vouchers.FirstOrDefaultAsync(v => v.Code == cmd.VoucherCode, ct);
+                if (voucher is not null)
+                    voucher.UsedCount++;
             }
 
             await _db.SaveChangesAsync(ct);

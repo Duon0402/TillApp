@@ -112,6 +112,16 @@ Mỗi ViewModel tự quyết định "lỗi này nghĩa là gì trên màn hình
 
 **`CheckoutCommand` — nhiều bảng thay đổi cùng lúc, chỉ 1 `SaveChangesAsync()` để đảm bảo atomic:** tạo `Order` + từng `OrderItem` + `StockMovement` (xuất kho) + trừ `Product.CurrentStock`, tất cả gom vào 1 lần `SaveChangesAsync()` duy nhất trong `CheckoutHandler`. Nhắc lại nguyên tắc đã ghi ở mục EF Core: **không** gọi lại `_mediator.Send(new AdjustStockCommand(...))` từ trong `CheckoutHandler` dù muốn tái dùng code — vì `AdjustStockHandler` tự `SaveChangesAsync()` riêng, gọi nhiều lần (mỗi sản phẩm 1 lần) nghĩa là nhiều transaction rời rạc, lỗi giữa chừng sẽ để lại dữ liệu nửa vời (đã trừ kho nhưng chưa có đơn hàng). Chấp nhận lặp lại vài dòng logic trừ kho trực tiếp trong `CheckoutHandler` — atomicity quan trọng hơn tránh lặp code ở đây.
 
+**Voucher — 3 lỗi kinh điển khi viết validate bằng tay, tự kiểm code mới thấy:**
+```csharp
+if (voucher.ExpiresAt >= DateTime.Now) return ...; // ❌ ExpiresAt >= now nghĩa là CÒN hạn, không phải hết hạn
+if (voucher.UsedCount > voucher.MaxUsage) return ...; // ❌ off-by-one: UsedCount == MaxUsage vẫn lọt qua
+public async Task<VoucherApplyResult> Handler(...)  // ❌ interface yêu cầu "Handle", thừa 1 chữ "r" là lỗi build ngay
+```
+Bài học: điều kiện hết hạn/giới hạn rất dễ viết ngược dấu (`<` vs `>=`) hoặc lệch 1 đơn vị (`>` vs `>=`) — loại lỗi này build vẫn sạch, chỉ lộ ra khi test đúng ca biên (VD dùng đúng lần thứ `MaxUsage`, hoặc test đúng ngày hết hạn) — không test kỹ thì âm thầm cho qua case lẽ ra phải chặn.
+
+**Số hiển thị trên UI phải là chính số được lưu vào DB, không phải 2 phép tính riêng biệt:** `SalesViewModel.GrandTotal` trừ `VoucherDiscount` để hiện cho thu ngân xem — nhưng `CheckoutHandler` (Handler tạo `Order`) ban đầu tính `Total` thẳng từ danh sách sản phẩm, **không hề biết** có voucher hay không. Hậu quả: khách được giảm giá, thu ngân thu đúng số tiền đã giảm (vì `PaymentDialog` nhận đúng `GrandTotal`), nhưng **đơn hàng lưu trong DB lại ghi số tiền chưa giảm** — sổ sách sai lệch với tiền mặt thực thu. Sửa bằng cách gửi luôn `VoucherDiscount` vào `CheckoutCommand`, trừ ngay trong `CheckoutHandler` khi tính `Order.Total` — đảm bảo **chỉ có 1 công thức tính tổng tiền**, không tính rải rác ở nhiều nơi rồi hy vọng chúng luôn khớp nhau.
+
 **`BulkImportProductsCommand(string FilePath)` — Command nhận đường dẫn file, không nhận sẵn `List<Row>` đã parse:**
 ```csharp
 public record BulkImportProductsCommand(string FilePath) : IRequest<BulkImportResult>;

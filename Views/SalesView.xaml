@@ -55,6 +55,17 @@
 
                     <StackPanel DockPanel.Dock="Bottom">
                         <Separator Margin="0,10" Background="{StaticResource CardBorderBrush}"/>
+
+                        <TextBlock Text="Mã voucher" Style="{StaticResource FieldLabelStyle}"/>
+                        <DockPanel Margin="0,0,0,8">
+                            <Button DockPanel.Dock="Right" Content="Áp dụng" Padding="10,7" Margin="8,0,0,0"
+                                    Command="{Binding ApplyVoucherCommand}"/>
+                            <TextBox Text="{Binding VoucherCode, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DockPanel>
+
+                        <TextBlock Text="{Binding VoucherDiscount, StringFormat={}Giảm giá: -{0:N0} đ}"
+                                   Foreground="{StaticResource AccentBrush}" Margin="0,0,0,6"/>
+
                         <TextBlock Text="{Binding GrandTotal, StringFormat={}Tổng cộng: {0:N0} đ}" FontSize="16" FontWeight="Bold"/>
                         <Button Content="Thanh toán" Margin="0,12,0,0" Padding="0,10" Command="{Binding CheckoutCommand}"/>
                     </StackPanel>
